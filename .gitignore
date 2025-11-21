@@ -6,26 +6,79 @@ build/
 dist/
 *.egg-info/
 .venv/
+.cache
 
 # Testing
 .coverage
 .pytest_cache/
+.ruff_cache
 
-# MyPy
+# Type checking
 .mypy_cache/
 
 # IDEs
 .vscode/
 .idea/
+*.local
+*.user
 
 # OS
 .DS_Store
+**/.DS_Store
+**/*Zone.Identifier
+**/*:Zone.Identifier
+**/*sec.endpointdlp
+**/*:sec.endpointdlp
+
+# Logs
+*.log
+*.log.jsonl
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Private settings and certificates
+**/certs/*.pem
+**/certs/config.json
+**/certs/mkcert
+.env
+*__local__*
+appsettings.*.json
+.claude/settings.local.json
+
+# Dependencies
+node_modules
+bin
+obj
+
+# Generated files
+output
+
+# Working folders
+ai_working/tmp
+.tmp
+context/
 
 # Project specific
-*.log
-*.db
 .amazonq/
 .obsidian/
 
-# Memory
-context/
+# Data directories
+.data/
+.azure
+azure.yaml
+next-steps.md
+
+# Trace logs
+.claude-trace
+
+# Smoke test runtime logs
+.smoke_test_data/data

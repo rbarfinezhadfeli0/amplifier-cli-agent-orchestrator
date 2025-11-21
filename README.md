@@ -1,336 +1,416 @@
-# CLI Agent Orchestrator
+# Amplifier CLI Agent Orchestrator
+
+> **Combined system**: Multi-agent orchestration with AI-powered knowledge synthesis
+
+This repository combines two powerful systems for AI-driven development:
+
+1. **CLI Agent Orchestrator (CAO)** - Multi-agent orchestration system using tmux and MCP
+2. **Amplifier** - Metacognitive AI development system with knowledge synthesis
+
+## 🎯 Overview
+
+### CLI Agent Orchestrator
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/awslabs/cli-agent-orchestrator)
 
-CLI Agent Orchestrator(CAO, pronounced as "kay-oh"), is a lightweight orchestration system for managing multiple AI agent sessions in tmux terminals. Enables Multi-agent collaboration via MCP server.
+A lightweight orchestration system for managing multiple AI agent sessions in tmux terminals, enabling multi-agent collaboration via Model Context Protocol (MCP) servers.
 
-## Hierarchical Multi-Agent System
+**Key Capabilities:**
+- **Hierarchical orchestration** – Supervisor agents coordinate specialized worker agents
+- **Session-based isolation** – Isolated tmux sessions with seamless MCP communication
+- **Intelligent task delegation** – Three orchestration patterns: Handoff, Assign, Send Message
+- **Flow scheduling** – Cron-like scheduling for automated workflows
+- **Context preservation** – Efficient context management across agents
+- **Advanced CLI integration** – Full access to Claude Code, Amazon Q, and Kiro CLI features
 
-CLI Agent Orchestrator (CAO) implements a hierarchical multi-agent system that enables complex problem-solving through specialized division of CLI Developer Agents.
+### Amplifier
 
-![CAO Architecture](./docs/assets/cao_architecture.png)
+> [!CAUTION]
+> This project is a research demonstrator. It is in early development and may change significantly. Using permissive AI tools in your repository requires careful attention to security considerations and human supervision. Use with caution, at your own risk.
 
-### Key Features
+A coordinated development system that transforms expertise into reusable AI tools. Describe your thinking process ("metacognitive recipes"), and Amplifier builds tools that execute them reliably.
 
-* **Hierarchical orchestration** – CAO's supervisor agent coordinates workflow management and task delegation to specialized worker agents. The supervisor maintains overall project context while agents focus on their domains of expertise.
-* **Session-based isolation** – Each agent operates in isolated tmux sessions, ensuring proper context separation while enabling seamless communication through Model Context Protocol (MCP) servers. This provides both coordination and parallel processing capabilities.
-* **Intelligent task delegation** – CAO automatically routes tasks to appropriate specialists based on project requirements, expertise matching, and workflow dependencies. The system adapts between individual agent work and coordinated team efforts through three orchestration patterns:
-    - **Handoff** - Synchronous task transfer with wait-for-completion
-    - **Assign** - Asynchronous task spawning for parallel execution  
-    - **Send Message** - Direct communication with existing agents
-* **Flexible workflow patterns** – CAO supports both sequential coordination for dependent tasks and parallel processing for independent work streams. This allows optimization of both development speed and quality assurance processes.
-* **Flow - Scheduled runs** – Automated execution of workflows at specified intervals using cron-like scheduling, enabling routine tasks and monitoring workflows to run unattended.
-* **Context preservation** – The supervisor agent provides only necessary context to each worker agent, avoiding context pollution while maintaining workflow coherence.
-* **Direct worker interaction and steering** – Users can interact directly with worker agents to provide additional steering, distinguishing from sub-agents features by allowing real-time guidance and course correction.
-* **Advanced CLI integration** – CAO agents have full access to advanced features of the developer CLI, such as the [sub-agents](https://docs.claude.com/en/docs/claude-code/sub-agents) feature of Claude Code, [Custom Agent](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-custom-agents.html) of Amazon Q Developer for CLI and so on.
+**Key Capabilities:**
+- **Knowledge synthesis pipeline** – Extract concepts, relationships, patterns from content
+- **Claude Code SDK integration** – Advanced automation and workflow management
+- **25+ specialized AI agents** – Pre-built agents for various development tasks
+- **20+ slash commands** – Document-Driven Development workflows
+- **Knowledge graphs** – Visual representation and inference of knowledge relationships
+- **Parallel development** – Git worktrees for simultaneous experiments
 
-For detailed project structure and architecture, see [CODEBASE.md](CODEBASE.md).
+## 🚀 Quick Start
 
-## Installation
+### Prerequisites
 
-1. Install tmux (version 3.3 or higher required)
+**Required:**
+- Python 3.11+
+- tmux 3.3+ (for CAO)
+- uv (Python package manager)
+- Git
 
+**Optional (for Amplifier features):**
+- Node.js (any recent version)
+- pnpm (package manager)
+
+### Installation
+
+#### 1. Install System Dependencies
+
+**tmux (required for CAO):**
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/awslabs/cli-agent-orchestrator/refs/heads/main/tmux-install.sh)
 ```
 
-2. Install uv
-
+**uv (Python package manager):**
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-3. Install CLI Agent Orchestrator:
-
+**Node.js and pnpm (optional, for Amplifier features):**
 ```bash
-uv tool install git+https://github.com/awslabs/cli-agent-orchestrator.git@main --upgrade
+# Mac
+brew install node pnpm
+
+# Ubuntu/Debian/WSL
+sudo apt install nodejs npm
+npm install -g pnpm
+pnpm setup && source ~/.bashrc
 ```
 
-## Quick Start
+#### 2. Clone and Install
+
+```bash
+# Clone this repository
+git clone <repository-url> amplifier-cli-agent-orchestrator
+cd amplifier-cli-agent-orchestrator
+
+# Install dependencies
+uv sync
+
+# Activate virtual environment
+source .venv/bin/activate  # Linux/Mac/WSL
+# .venv\Scripts\Activate.ps1  # Windows PowerShell
+```
+
+#### 3. Configure Environment
+
+```bash
+# Copy environment template (for Amplifier features)
+cp .env.example .env
+
+# Edit .env and add your API keys:
+# ANTHROPIC_API_KEY=your_key_here
+# OPENAI_API_KEY=your_key_here (optional)
+```
+
+## 📖 Using CLI Agent Orchestrator
 
 ### Installing Agents
 
 CAO supports installing agents from multiple sources:
 
-**1. Install built-in agents (bundled with CAO):**
-
 ```bash
+# Install built-in agents
 cao install code_supervisor
 cao install developer
 cao install reviewer
-```
 
-**2. Install from a local file:**
-
-```bash
+# Install from local file
 cao install ./my-custom-agent.md
-cao install /absolute/path/to/agent.md
-```
 
-**3. Install from a URL:**
-
-```bash
+# Install from URL
 cao install https://example.com/agents/custom-agent.md
 ```
 
-When installing from a file or URL, the agent is saved to your local agent store (`~/.aws/cli-agent-orchestrator/agent-store/`) and can be referenced by name in future installations.
-
-**Provider Selection:**
-
-By default, agents are installed for the `q_cli` provider (Amazon Q CLI). You can specify a different provider:
-
-```bash
-# Install for Kiro CLI
-cao install developer --provider kiro_cli
-
-# Install for Amazon Q CLI (default)
-cao install developer --provider q_cli
-```
-
-Note: The `claude_code` provider does not require agent installation.
-
-For details on creating custom agent profiles, see [docs/agent-profile.md](docs/agent-profile.md).
-
 ### Launching Agents
 
-Start the cao server:
-
 ```bash
-cao-server
-```
-
-In another terminal, launch a terminal with an agent profile:
-
-```bash
-cao launch --agents code_supervisor
-
-# Or specify a provider
-cao launch --agents code_supervisor --provider kiro_cli
-```
-
-Shutdown sessions:
-
-```bash
-# Shutdown all cao sessions
-cao shutdown --all
-
-# Shutdown specific session
-cao shutdown --session cao-my-session
-```
-
-### Working with tmux Sessions
-
-All agent sessions run in tmux. Useful commands:
-
-```bash
-# List all sessions
-tmux list-sessions
-
-# Attach to a session
-tmux attach -t <session-name>
-
-# Detach from session (inside tmux)
-Ctrl+b, then d
-
-# Switch between windows (inside tmux)
-Ctrl+b, then n          # Next window
-Ctrl+b, then p          # Previous window
-Ctrl+b, then <number>   # Go to window number (0-9)
-Ctrl+b, then w          # List all windows (interactive selector)
-
-# Delete a session
-cao shutdown --session <session-name>
-```
-
-**List all windows (Ctrl+b, w):**
-
-![Tmux Window Selector](./docs/assets/tmux_all_windows.png)
-
-## MCP Server Tools and Orchestration Modes
-
-CAO provides a local HTTP server that processes orchestration requests. CLI agents can interact with this server through MCP tools to coordinate multi-agent workflows.
-
-### How It Works
-
-Each agent terminal is assigned a unique `CAO_TERMINAL_ID` environment variable. The server uses this ID to:
-
-- Route messages between agents
-- Track terminal status (IDLE, BUSY, COMPLETED, ERROR)
-- Manage terminal-to-terminal communication via inbox
-- Coordinate orchestration operations
-
-When an agent calls an MCP tool, the server identifies the caller by their `CAO_TERMINAL_ID` and orchestrates accordingly.
-
-### Orchestration Modes
-
-CAO supports three orchestration patterns:
-
-**1. Handoff** - Transfer control to another agent and wait for completion
-
-- Creates a new terminal with the specified agent profile
-- Sends the task message and waits for the agent to finish
-- Returns the agent's output to the caller
-- Automatically exits the agent after completion
-- Use when you need **synchronous** task execution with results
-
-Example: Sequential code review workflow
-
-![Handoff Workflow](./docs/assets/handoff-workflow.png)
-
-**2. Assign** - Spawn an agent to work independently (async)
-
-- Creates a new terminal with the specified agent profile
-- Sends the task message with callback instructions
-- Returns immediately with the terminal ID
-- Agent continues working in the background
-- Assigned agent sends results back to supervisor via `send_message` when complete
-- Messages are queued for delivery if the supervisor is busy (common in parallel workflows)
-- Use for **asynchronous** task execution or fire-and-forget operations
-
-Example: A supervisor assigns parallel data analysis tasks to multiple analysts while using handoff to sequentially generate a report template, then combines all results.
-
-See [examples/assign](examples/assign) for the complete working example.
-
-![Parallel Data Analysis](./docs/assets/parallel-data-analysis.png)
-
-**3. Send Message** - Communicate with an existing agent
-
-- Sends a message to a specific terminal's inbox
-- Messages are queued and delivered when the terminal is idle
-- Enables ongoing collaboration between agents
-- Common for **swarm** operations where multiple agents coordinate dynamically
-- Use for iterative feedback or multi-turn conversations
-
-Example: Multi-role feature development
-
-![Multi-role Feature Development](./docs/assets/multi-role-feature-development.png)
-
-### Custom Orchestration
-
-The `cao-server` runs on `http://localhost:9889` by default and exposes REST APIs for session management, terminal control, and messaging. The CLI commands (`cao launch`, `cao shutdown`) and MCP server tools (`handoff`, `assign`, `send_message`) are just examples of how these APIs can be packaged together.
-
-You can combine the three orchestration modes above into custom workflows, or create entirely new orchestration patterns using the underlying APIs to fit your specific needs.
-
-For complete API documentation, see [docs/api.md](docs/api.md).
-
-## Flows - Scheduled Agent Sessions
-
-Flows allow you to schedule agent sessions to run automatically based on cron expressions.
-
-### Prerequisites
-
-Install the agent profile you want to use:
-
-```bash
-cao install developer
-```
-
-### Quick Start
-
-The example flow asks a simple world trivia question every morning at 7:30 AM.
-
-```bash
-# 1. Start the cao server
+# Start the CAO server
 cao-server
 
-# 2. In another terminal, add a flow
-cao flow add examples/flow/morning-trivia.md
-
-# 3. List flows to see schedule and status
-cao flow list
-
-# 4. Manually run a flow (optional - for testing)
-cao flow run morning-trivia
-
-# 5. View flow execution (after it runs)
-tmux list-sessions
-tmux attach -t <session-name>
-
-# 6. Cleanup session when done
-cao shutdown --session <session-name>
+# In a new terminal, launch an agent
+cao launch code_supervisor
 ```
 
-**IMPORTANT:** The `cao-server` must be running for flows to execute on schedule.
+### Orchestration Patterns
 
-### Example 1: Simple Scheduled Task
-
-A flow that runs at regular intervals with a static prompt (no script needed):
-
-**File: `daily-standup.md`**
-
-```yaml
----
-name: daily-standup
-schedule: "0 9 * * 1-5"  # 9am weekdays
-agent_profile: developer
-provider: q_cli  # Optional, defaults to q_cli
----
-
-Review yesterday's commits and create a standup summary.
+**Handoff (synchronous):**
+```python
+# Transfer task and wait for completion
+handoff(terminal_id="agent-1", task="Review the authentication code")
 ```
 
-### Example 2: Conditional Execution with Health Check
-
-A flow that monitors a service and only executes when there's an issue:
-
-**File: `monitor-service.md`**
-
-```yaml
----
-name: monitor-service
-schedule: "*/5 * * * *"  # Every 5 minutes
-agent_profile: developer
-script: ./health-check.sh
----
-
-The service at [[url]] is down (status: [[status_code]]).
-Please investigate and triage the issue:
-1. Check recent deployments
-2. Review error logs
-3. Identify root cause
-4. Suggest remediation steps
+**Assign (asynchronous):**
+```python
+# Spawn parallel tasks
+assign(terminal_id="agent-2", task="Analyze database performance")
 ```
 
-**Script: `health-check.sh`**
+**Send Message:**
+```python
+# Direct agent-to-agent communication
+send_message(terminal_id="agent-3", message="Status update needed")
+```
+
+### Scheduled Flows
 
 ```bash
-#!/bin/bash
-URL="https://api.example.com/health"
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
-
-if [ "$STATUS" != "200" ]; then
-  # Service is down - execute flow
-  echo "{\"execute\": true, \"output\": {\"url\": \"$URL\", \"status_code\": \"$STATUS\"}}"
-else
-  # Service is healthy - skip execution
-  echo "{\"execute\": false, \"output\": {}}"
-fi
-```
-
-### Flow Commands
-
-```bash
-# Add a flow
-cao flow add daily-standup.md
-
-# List all flows (shows schedule, next run time, enabled status)
+# List available flows
 cao flow list
 
-# Enable/disable a flow
-cao flow enable daily-standup
-cao flow disable daily-standup
+# Start a flow
+cao flow start my-workflow
 
-# Manually run a flow (ignores schedule)
-cao flow run daily-standup
-
-# Remove a flow
-cao flow remove daily-standup
+# Stop a flow
+cao flow stop my-workflow
 ```
 
-## Security
+For detailed CAO documentation, see [CODEBASE.md](CODEBASE.md) and [DEVELOPMENT.md](DEVELOPMENT.md).
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+## 🎨 Using Amplifier
 
-## License
+### Start Claude Code
 
-This project is licensed under the Apache-2.0 License.
+```bash
+claude
+```
+
+### Create Your First Tool
+
+1. **Identify a task** you want to automate
+2. **Describe your thinking process** in natural language
+3. **Let Amplifier build the tool** based on your description
+4. **Test and refine** the tool iteratively
+5. **Reuse and combine** tools for complex workflows
+
+### Key Amplifier Commands
+
+Amplifier provides 20+ slash commands for various workflows. Some examples:
+
+```bash
+# Document-Driven Development
+/ddd-spec    # Create technical specification
+/ddd-impl    # Implement from specification
+/ddd-test    # Generate tests
+/ddd-sync    # Sync docs with code
+
+# Knowledge synthesis
+/synthesize  # Extract and synthesize knowledge
+/graph       # Generate knowledge graph
+
+# Development workflows
+/review      # Code review workflow
+/refactor    # Refactoring workflow
+```
+
+For complete Amplifier documentation, see:
+- [AMPLIFIER_VISION.md](AMPLIFIER_VISION.md) - Strategic vision
+- [AGENTS.md](AGENTS.md) - AI agent guidance (30KB)
+- [CLAUDE.md](CLAUDE.md) - Claude-specific instructions
+- [DISCOVERIES.md](DISCOVERIES.md) - Pattern discoveries
+- [Makefile](Makefile) - 100+ make targets
+
+## 🔗 Integration: CAO + Amplifier
+
+The combined system enables powerful workflows:
+
+### Scenario 1: Distributed Knowledge Synthesis
+
+Use CAO to orchestrate multiple Amplifier agents working on different knowledge domains in parallel:
+
+```python
+# Supervisor agent coordinates parallel synthesis
+assign(terminal_id="synthesizer-1", task="Synthesize AI research papers")
+assign(terminal_id="synthesizer-2", task="Synthesize development best practices")
+assign(terminal_id="synthesizer-3", task="Synthesize security patterns")
+
+# Merge results when complete
+handoff(terminal_id="merger", task="Combine all synthesized knowledge")
+```
+
+### Scenario 2: Hierarchical Development
+
+Use CAO's hierarchical structure with Amplifier's specialized agents:
+
+```python
+# Supervisor delegates to specialized Amplifier agents
+handoff(terminal_id="spec-writer", task="Create API specification using /ddd-spec")
+handoff(terminal_id="implementer", task="Implement using /ddd-impl")
+handoff(terminal_id="tester", task="Generate tests using /ddd-test")
+handoff(terminal_id="reviewer", task="Review code using /review")
+```
+
+### Scenario 3: Scheduled Knowledge Updates
+
+Use CAO flows to run Amplifier knowledge synthesis on a schedule:
+
+```bash
+# Create a flow that runs daily knowledge synthesis
+cao flow create daily-learning \
+  --schedule "0 9 * * *" \
+  --agent knowledge-synthesizer \
+  --task "Synthesize yesterday's discoveries"
+```
+
+## 📁 Repository Structure
+
+```
+amplifier-cli-agent-orchestrator/
+├── src/cli_agent_orchestrator/   # CAO source code
+│   ├── api/                       # FastAPI server
+│   ├── mcp_server/                # MCP server implementation
+│   ├── cli/                       # CLI commands
+│   ├── services/                  # Business logic
+│   ├── providers/                 # CLI tool integrations
+│   └── models/                    # Data models
+├── amplifier/                     # Amplifier source code
+│   ├── knowledge/                 # Knowledge synthesis
+│   ├── tools/                     # Pre-built tools
+│   ├── agents/                    # AI agent definitions
+│   └── utils/                     # Utilities
+├── .claude/                       # Claude Code configuration
+│   ├── agents/                    # Amplifier agent profiles
+│   └── commands/                  # Slash commands
+├── docs/                          # CAO documentation
+├── docs_amplifier/                # Amplifier documentation
+├── test/                          # CAO tests
+├── tests_amplifier/               # Amplifier tests
+├── scenarios/                     # Example scenarios
+├── tools/                         # CLI tools
+├── pyproject.toml                 # Combined dependencies
+├── Makefile                       # Build and workflow commands
+└── README.md                      # This file
+```
+
+## 🛠️ Development
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run CAO tests only
+pytest test/
+
+# Run Amplifier tests only
+pytest tests_amplifier/
+
+# Run with coverage
+pytest --cov=src --cov=amplifier
+```
+
+### Code Quality
+
+```bash
+# Format code
+black .
+isort .
+
+# Lint code
+ruff check .
+
+# Type checking
+mypy src/
+pyright amplifier/
+```
+
+### Using Make Commands
+
+Amplifier provides extensive make targets:
+
+```bash
+# See all available commands
+make help
+
+# Install dependencies
+make install
+
+# Run tests
+make test
+
+# Code quality checks
+make lint
+
+# Knowledge management
+make kb-index        # Index knowledge base
+make kb-search       # Search knowledge
+make kg-build        # Build knowledge graph
+```
+
+## 📚 Documentation
+
+### CLI Agent Orchestrator
+- [CODEBASE.md](CODEBASE.md) - Architecture overview
+- [DEVELOPMENT.md](DEVELOPMENT.md) - Development guide
+- [docs/api.md](docs/api.md) - REST API documentation
+- [docs/agent-profile.md](docs/agent-profile.md) - Agent profile creation
+
+### Amplifier
+- [AMPLIFIER_VISION.md](AMPLIFIER_VISION.md) - Strategic vision and design principles
+- [AGENTS.md](AGENTS.md) - Comprehensive AI agent guidance
+- [CLAUDE.md](CLAUDE.md) - Claude-specific instructions
+- [DISCOVERIES.md](DISCOVERIES.md) - Problem solutions and patterns
+- [ROADMAP.md](ROADMAP.md) - Development roadmap
+- [docs_amplifier/](docs_amplifier/) - Detailed guides and tutorials
+
+## 🔒 Security
+
+Both systems require careful security consideration:
+
+### CAO Security
+- Agents operate in isolated tmux sessions
+- MCP communication is localhost-only by default
+- Review agent profiles before installation
+- See [SECURITY.md](SECURITY.md)
+
+### Amplifier Security
+- Uses permissive AI tools that modify code
+- Requires human supervision for all operations
+- Store API keys securely in .env (never commit)
+- Review all AI-generated code before execution
+- See [SECURITY.md](SECURITY.md)
+
+## 🤝 Contributing
+
+This is a combined research project. For contribution guidelines:
+
+- **CLI Agent Orchestrator**: See [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Amplifier**: Currently not accepting external contributions (early development)
+
+## 📄 License
+
+- **CLI Agent Orchestrator**: Apache-2.0 License
+- **Amplifier**: MIT License
+
+See [LICENSE](LICENSE) for details.
+
+## 📞 Support
+
+- [SUPPORT.md](SUPPORT.md) - Getting help and community resources
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) - Community guidelines
+
+## ⚠️ Disclaimer
+
+This combined system is a research demonstrator in active development:
+
+- **Experimental nature**: Both components are evolving rapidly
+- **Breaking changes**: APIs and interfaces may change without notice
+- **Security considerations**: AI-powered tools require careful supervision
+- **Production use**: Not recommended for production environments without thorough testing
+- **Risk acceptance**: Use at your own risk with appropriate precautions
+
+## 🙏 Acknowledgments
+
+This project combines:
+- [CLI Agent Orchestrator](https://github.com/awslabs/cli-agent-orchestrator) by AWS Labs
+- [Amplifier](https://github.com/microsoft/amplifier) by Microsoft Research
+
+Both projects are used under their respective licenses.
+
+---
+
+**Get Started:** Choose your workflow:
+- Want multi-agent orchestration? → Start with [CAO Quick Start](#-using-cli-agent-orchestrator)
+- Want knowledge synthesis? → Start with [Amplifier Quick Start](#-using-amplifier)
+- Want both? → Try the [integration scenarios](#-integration-cao--amplifier)
