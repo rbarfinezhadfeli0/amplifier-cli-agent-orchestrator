@@ -1,0 +1,3 @@
+[submodule "amplifier-cli-agent-orchestrator"]
+	path = amplifier-cli-agent-orchestrator
+	url = https://github.com/rbarfinezhadfeli0/amplifier-cli-agent-orchestrator
