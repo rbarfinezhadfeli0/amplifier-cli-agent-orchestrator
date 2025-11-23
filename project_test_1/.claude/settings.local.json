@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(cat:*)",
+      "Bash(make install:*)",
+      "Bash(make test:*)",
+      "Bash(uv pip install:*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "browser-use",
+    "context7",
+    "deepwiki",
+    "repomix",
+    "zen"
+  ]
+}

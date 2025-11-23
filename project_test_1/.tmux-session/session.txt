@@ -1,0 +1,6 @@
+# Tmux session: cao-d055e7fb
+# Saved: Fri Nov 21 03:49:19 AM PST 2025
+# Working directory: /media/psf/github_v3/projects/amplifier-cli-agent-orchestrator/amplifier-cli-agent-orchestrator/project_test_1
+
+window:1:code_supervisor-4171:1
+pane:1.1:/media/psf/github_v3/projects/amplifier-cli-agent-orchestrator/amplifier-cli-agent-orchestrator/project_test_1:1

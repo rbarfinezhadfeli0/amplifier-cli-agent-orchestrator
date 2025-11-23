@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tmux list-windows:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "browser-use",
+    "context7",
+    "deepwiki",
+    "repomix",
+    "zen"
+  ]
+}
